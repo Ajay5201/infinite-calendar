@@ -45,7 +45,7 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
                                 aspectRatio: { xs: '0', md: '1' },
                                 textAlign: 'center',
                                 borderRadius: '0px',
-                                backgroundColor: index === 0 || index % 7 === 0 ? '#F0F0F0' : '#FFFFFF',
+                                backgroundColor: index === 0 || index % 7 === 0 ? '#EBE9EB' : '#FFFFFF',
                                 width: { xs: '56px', sm: '110px', md: 'auto' },
                                 height: { xs: '100px', md: 'auto' },
                                 position: 'relative',

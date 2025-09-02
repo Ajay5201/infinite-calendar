@@ -93,7 +93,7 @@ const InfiniteCalendar: React.FC = () => {
         const viewHeight = scrollContainer.current.clientHeight;
         const scrollBottom = scrollTop + viewHeight;
         const scrollHeight = scrollContainer.current.scrollHeight;
-        const threshold = viewHeight * 0.9; // Less sensitive threshold
+        const threshold = viewHeight * 0.9;
 
         if (scrollTop < threshold) addMonthsToStart();
         if (scrollBottom > scrollHeight - threshold) addMonthsToEnd();
@@ -191,12 +191,71 @@ const InfiniteCalendar: React.FC = () => {
                     <IconButton onClick={handlePreviousMonth} size="small" sx={{ bgcolor: 'grey.100', cursor: 'pointer', '&:hover': { bgcolor: 'grey.200' } }}>
                         <ChevronLeft />
                     </IconButton>
-                    <Typography sx={{ minWidth: { xs: '80px', md: '180px' }, textAlign: 'center', fontWeight: 600, fontSize: { xs: '14px', md: '23px' } }}>
+                    <Typography
+                        key={`${currentMonth.year}-${currentMonth.month}`}
+                        sx={{
+                            minWidth: { xs: '80px', md: '180px' },
+                            textAlign: 'center',
+                            fontWeight: 600,
+                            fontSize: { xs: '14px', md: '23px' },
+                            animation: 'fadeSlideIn 0.3s ease-out',
+                            '@keyframes fadeSlideIn': {
+                                '0%': {
+                                    opacity: 0,
+                                    transform: 'translateY(-10px)'
+                                },
+                                '100%': {
+                                    opacity: 1,
+                                    transform: 'translateY(0)'
+                                }
+                            }
+                        }}
+                    >
                         {SHORTMONTHS[currentMonth.month]} <span style={{ fontWeight: 400 }}>{currentMonth.year}</span>
                     </Typography>
                     <IconButton onClick={handleNextMonth} size="small" sx={{ bgcolor: 'grey.100', cursor: 'pointer', '&:hover': { bgcolor: 'grey.200' } }}>
                         <ChevronRight />
                     </IconButton>
+                </Box>
+            </Box>
+
+            <Box sx={{
+                position: 'fixed',
+                top: { xs: '56px', md: '66px' },
+                left: 0,
+                right: 0,
+                zIndex: 15,
+                bgcolor: 'grey.50',
+                borderBottom: '1px solid',
+                borderColor: 'grey.200',
+            }}>
+                <Box sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(7, 1fr)',
+                    mx: 'auto'
+                }}>
+                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+                        <Box
+                            display={'flex'}
+                            justifyContent={'center'}
+                            alignItems={'center'}
+                            key={day}
+                            sx={{
+                                textAlign: 'center',
+                                fontSize: '0.875rem',
+                                fontWeight: 500,
+                                color: 'text.secondary',
+                                width: { xs: '56px', sm: '110px', md: 'auto' },
+                                height: { xs: '40px', md: '40px' },
+
+                                backgroundColor: index === 0 || index % 7 === 0 ? '#EBE9EB' : '#FFFFFF',
+                                border: '0.5px solid',
+                                borderColor: 'grey.100'
+                            }}
+                        >
+                            {day}
+                        </Box>
+                    ))}
                 </Box>
             </Box>
 
