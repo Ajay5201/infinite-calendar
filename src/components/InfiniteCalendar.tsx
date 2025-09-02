@@ -98,7 +98,6 @@ const InfiniteCalendar: React.FC = () => {
         if (scrollTop < threshold) addMonthsToStart();
         if (scrollBottom > scrollHeight - threshold) addMonthsToEnd();
 
-        // Find the most visible month
         let maxVisible = 0;
         let mostVisible = currentMonth;
 
