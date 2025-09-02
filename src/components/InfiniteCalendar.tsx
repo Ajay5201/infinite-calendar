@@ -219,47 +219,47 @@ const InfiniteCalendar: React.FC = () => {
                 </Box>
             </Box>
 
-            <Box sx={{
-                position: 'fixed',
-                top: { xs: '56px', md: '66px' },
-                left: 0,
-                right: 0,
-                zIndex: 15,
-                bgcolor: 'grey.50',
-                borderBottom: '1px solid',
-                borderColor: 'grey.200',
-            }}>
+
+            <Box ref={scrollContainer} sx={{ flexGrow: 1, overflowY: 'auto', mt: { xs: '56px', md: '66px' } }}>
+
+
                 <Box sx={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(7, 1fr)',
-                    mx: 'auto'
+                    position: 'sticky', // 👈 stays visible at top *inside scroll*
+                    top: 0,
+                    zIndex: 5,
+                    bgcolor: 'grey.50',
+                    borderBottom: '1px solid',
+                    borderColor: 'grey.200',
                 }}>
-                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
-                        <Box
-                            display={'flex'}
-                            justifyContent={'center'}
-                            alignItems={'center'}
-                            key={day}
-                            sx={{
-                                textAlign: 'center',
-                                fontSize: '0.875rem',
-                                fontWeight: 500,
-                                color: 'text.secondary',
-                                width: { xs: '56px', sm: '110px', md: 'auto' },
-                                height: { xs: '40px', md: '40px' },
-
-                                backgroundColor: index === 0 || index % 7 === 0 ? '#EBE9EB' : '#FFFFFF',
-                                border: '0.5px solid',
-                                borderColor: 'grey.100'
-                            }}
-                        >
-                            {day}
-                        </Box>
-                    ))}
+                    <Box sx={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(7, 1fr)',
+                        mx: 'auto'
+                    }}>
+                        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+                            <Box
+                                key={day}
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                sx={{
+                                    textAlign: 'center',
+                                    fontSize: '0.875rem',
+                                    fontWeight: 500,
+                                    color: 'text.secondary',
+                                    width: { xs: '56px', sm: '110px', md: 'auto' },
+                                    height: { xs: '40px', md: '40px' },
+                                    backgroundColor: index === 0 || index % 7 === 0 ? '#EBE9EB' : '#FFFFFF',
+                                    border: '0.5px solid',
+                                    borderColor: 'grey.100',
+                                }}
+                            >
+                                {day}
+                            </Box>
+                        ))}
+                    </Box>
                 </Box>
-            </Box>
 
-            <Box ref={scrollContainer} sx={{ flexGrow: 1, overflowY: 'auto', mt: '80px' }}>
                 {months.map(({ year, month }) => {
                     const key = `${year}-${month}`;
                     return (
