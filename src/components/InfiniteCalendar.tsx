@@ -225,7 +225,7 @@ const InfiniteCalendar: React.FC = () => {
 
                 <Box sx={{
                     position: 'sticky', // 👈 stays visible at top *inside scroll*
-                    top: 0,
+                    top: { xs: 50, md: 0 },
                     zIndex: 5,
                     bgcolor: 'grey.50',
                     borderBottom: '1px solid',
@@ -283,7 +283,7 @@ const InfiniteCalendar: React.FC = () => {
             </Box>
 
             {selectedEntry && <JournalCards targetDate={selectedEntry.date} onClose={onModalClose} />}
-        </Box>
+        </Box >
     );
 };
 
