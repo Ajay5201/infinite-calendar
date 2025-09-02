@@ -11,10 +11,10 @@ const InfiniteCalendar: React.FC = () => {
     const now = new Date();
     const [currentMonth, setCurrentMonth] = useState<MonthData>({ year: now.getFullYear(), month: now.getMonth() });
     const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
 
     const scrollContainer = useRef<HTMLDivElement>(null);
     const monthRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-
 
     const [months, setMonths] = useState<MonthData[]>(() => {
         const initial: MonthData[] = [];
@@ -25,11 +25,11 @@ const InfiniteCalendar: React.FC = () => {
         return initial;
     });
 
-    const [monthRange, setMonthRange] = useState<{ start: MonthData; end: MonthData }>({
-        start: { year: now.getFullYear(), month: now.getMonth() - 2 },
-        end: { year: now.getFullYear(), month: now.getMonth() + 2 },
-    });
 
+    const monthRangeRef = useRef<{ start: MonthData; end: MonthData }>({
+        start: { year: now.getFullYear(), month: now.getMonth() - 2 },
+        end: { year: now.getFullYear(), month: now.getMonth() + 2 }
+    });
 
     const entriesByDate = JOURNAL_ENTRIES.reduce<Record<string, JournalEntry[]>>((acc, entry) => {
         const key = formatDateKey(parseDate(entry.date));
@@ -41,7 +41,7 @@ const InfiniteCalendar: React.FC = () => {
     const addMonthsToStart = useCallback((count = 6) => {
         setMonths(prev => {
             const newMonths: MonthData[] = [];
-            let { year, month } = monthRange.start;
+            let { year, month } = monthRangeRef.current.start;
 
             for (let i = 0; i < count; i++) {
                 month--;
@@ -52,15 +52,20 @@ const InfiniteCalendar: React.FC = () => {
                 newMonths.unshift({ year, month });
             }
 
-            setMonthRange(prev => ({ ...prev, start: { year, month } }));
+
+            monthRangeRef.current = {
+                ...monthRangeRef.current,
+                start: { year, month }
+            };
+
             return [...newMonths, ...prev];
         });
-    }, [monthRange.start]);
+    }, []);
 
     const addMonthsToEnd = useCallback((count = 6) => {
         setMonths(prev => {
             const newMonths: MonthData[] = [];
-            let { year, month } = monthRange.end;
+            let { year, month } = monthRangeRef.current.end;
 
             for (let i = 0; i < count; i++) {
                 month++;
@@ -71,24 +76,29 @@ const InfiniteCalendar: React.FC = () => {
                 newMonths.push({ year, month });
             }
 
-            setMonthRange(prev => ({ ...prev, end: { year, month } }));
+
+            monthRangeRef.current = {
+                ...monthRangeRef.current,
+                end: { year, month }
+            };
+
             return [...prev, ...newMonths];
         });
-    }, [monthRange.end]);
+    }, []);
 
     const handleScroll = useCallback(() => {
-        if (!scrollContainer.current) return;
+        if (!scrollContainer.current || isInitialLoad) return;
 
         const scrollTop = scrollContainer.current.scrollTop;
         const viewHeight = scrollContainer.current.clientHeight;
         const scrollBottom = scrollTop + viewHeight;
         const scrollHeight = scrollContainer.current.scrollHeight;
-        const threshold = viewHeight * 0.5;
+        const threshold = viewHeight * 0.9; // Less sensitive threshold
 
         if (scrollTop < threshold) addMonthsToStart();
         if (scrollBottom > scrollHeight - threshold) addMonthsToEnd();
 
-
+        // Find the most visible month
         let maxVisible = 0;
         let mostVisible = currentMonth;
 
@@ -112,7 +122,7 @@ const InfiniteCalendar: React.FC = () => {
         if (mostVisible.year !== currentMonth.year || mostVisible.month !== currentMonth.month) {
             setCurrentMonth(mostVisible);
         }
-    }, [currentMonth, addMonthsToStart, addMonthsToEnd]);
+    }, [currentMonth, addMonthsToStart, addMonthsToEnd, isInitialLoad]);
 
     useEffect(() => {
         const container = scrollContainer.current;
@@ -124,9 +134,13 @@ const InfiniteCalendar: React.FC = () => {
     }, [handleScroll]);
 
     const scrollToMonth = (year: number, month: number) => {
-        console.log(year, month)
+        console.log('Scrolling to:', year, month);
         const el = monthRefs.current.get(`${year}-${month}`);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            console.warn('Month element not found:', year, month);
+        }
     };
 
     const handlePreviousMonth = () => {
@@ -143,11 +157,18 @@ const InfiniteCalendar: React.FC = () => {
 
     const handleEntryClick = (entry: JournalEntry) => {
         setSelectedEntry(entry);
-
     };
 
     useEffect(() => {
-        const timer = setTimeout(() => scrollToMonth(currentMonth.year, currentMonth.month), 100);
+        const timer = setTimeout(() => {
+            console.log('Initial scroll to current month:', currentMonth.year, currentMonth.month);
+            scrollToMonth(currentMonth.year, currentMonth.month);
+
+            setTimeout(() => {
+                setIsInitialLoad(false);
+            }, 500);
+        }, 300);
+
         return () => clearTimeout(timer);
     }, []);
 
@@ -155,7 +176,6 @@ const InfiniteCalendar: React.FC = () => {
 
     return (
         <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'grey.50' }}>
-
             <Box sx={{
                 position: 'fixed', top: 0, left: 0, right: 0, zIndex: 20,
                 bgcolor: 'white', borderBottom: '1px solid', borderColor: 'grey.200',
@@ -180,7 +200,6 @@ const InfiniteCalendar: React.FC = () => {
                     </IconButton>
                 </Box>
             </Box>
-
 
             <Box ref={scrollContainer} sx={{ flexGrow: 1, overflowY: 'auto', mt: '80px' }}>
                 {months.map(({ year, month }) => {

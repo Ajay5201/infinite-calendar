@@ -25,8 +25,6 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
 
     return (
         <Box sx={{ mb: { xs: '-99px', md: '-208px' }, color: 'green' }}>
-
-
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
                 {days.map((day, index) => {
                     if (!day) {
@@ -35,7 +33,6 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
                             height: '80px',
                         }} />;
                     }
-
                     const date = new Date(year, month, day);
                     const dateKey = formatDateKey(date);
                     const entries = entriesByDate[dateKey] || [];
