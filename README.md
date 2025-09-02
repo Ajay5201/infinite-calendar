@@ -1,6 +1,6 @@
 # My Hair Diary - Infinite Calendar
 
-A React-based infinite scrolling calendar application for tracking hair care journal entries.
+A VITE React-based infinite scrolling calendar application for tracking hair care journal entries.
 
 ## Running Locally
 
@@ -15,9 +15,9 @@ Getting this up and running is pretty straightforward:
    ```
 3. **Start the dev server:**
    ```bash
-   npm start
+   npm run dev
    # or
-   yarn start
+   yarn dev
    ```
 4. **Open your browser** to `http://localhost:5173`
 
