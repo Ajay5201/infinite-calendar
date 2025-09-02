@@ -19,7 +19,7 @@ Getting this up and running is pretty straightforward:
    # or
    yarn start
    ```
-4. **Open your browser** to `http://localhost:3000`
+4. **Open your browser** to `http://localhost:5173`
 
 That's it! The app should load with the current month visible by default.
 
