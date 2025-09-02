@@ -224,8 +224,8 @@ const InfiniteCalendar: React.FC = () => {
 
 
                 <Box sx={{
-                    position: 'sticky', // 👈 stays visible at top *inside scroll*
-                    top: { xs: 50, md: 0 },
+                    position: 'sticky',
+                    top: 0,
                     zIndex: 5,
                     bgcolor: 'grey.50',
                     borderBottom: '1px solid',
